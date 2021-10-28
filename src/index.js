@@ -2,8 +2,8 @@
  * @overview A minimalistic wrapper around React Native's AsyncStorage.
  * @license MIT
  */
-import merge from 'lodash.merge';
-import AsyncStorage from '@react-native-community/async-storage';
+import merge from "lodash.merge";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const deviceStorage = {
 	/**
@@ -12,13 +12,13 @@ const deviceStorage = {
 	 * @return {Promise}
 	 */
 	get(key) {
-		if(!Array.isArray(key)) {
-			return AsyncStorage.getItem(key).then(value => {
+		if (!Array.isArray(key)) {
+			return AsyncStorage.getItem(key).then((value) => {
 				return JSON.parse(value);
 			});
 		} else {
-			return AsyncStorage.multiGet(key).then(values => {
-				return values.map(value => {
+			return AsyncStorage.multiGet(key).then((values) => {
+				return values.map((value) => {
 					return JSON.parse(value[1]);
 				});
 			});
@@ -32,10 +32,10 @@ const deviceStorage = {
 	 * @return {Promise}
 	 */
 	save(key, value) {
-		if(!Array.isArray(key)) {
+		if (!Array.isArray(key)) {
 			return AsyncStorage.setItem(key, JSON.stringify(value));
 		} else {
-			var pairs = key.map(function(pair) {
+			var pairs = key.map(function (pair) {
 				return [pair[0], JSON.stringify(pair[1])];
 			});
 			return AsyncStorage.multiSet(pairs);
@@ -49,8 +49,8 @@ const deviceStorage = {
 	 * @return {Promise}
 	 */
 	update(key, value) {
-		return deviceStorage.get(key).then(item => {
-			value = typeof value === 'string' ? value : merge({}, item, value);
+		return deviceStorage.get(key).then((item) => {
+			value = typeof value === "string" ? value : merge({}, item, value);
 			return AsyncStorage.setItem(key, JSON.stringify(value));
 		});
 	},
@@ -91,7 +91,9 @@ const deviceStorage = {
 			if (Array.isArray(currentValue)) {
 				return deviceStorage.save(key, [...currentValue, value]);
 			}
-			throw new Error(`Existing value for key "${key}" must be of type null or Array, received ${typeof currentValue}.`);
+			throw new Error(
+				`Existing value for key "${key}" must be of type null or Array, received ${typeof currentValue}.`
+			);
 		});
 	},
 };
